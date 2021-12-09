@@ -21,9 +21,10 @@ class Generator(tf.keras.Model):
         self.embed.add(Embedding(self.embed_size))
         self.embed.add(LeakyReLU(alpha=0.03))
         
-        self.ca = Sequential()
+        # self.ca = Sequential()
         
-        self.ca.add(Dense())
+        # self.ca.add(Dense())
+        # self.ca.add(Dense())
         
         self.G = Sequential()
 
@@ -53,8 +54,11 @@ class Generator(tf.keras.Model):
         self.G.add(Activation('tanh')) # maybe use softmax instead
         
 
-    def call(self, embedding):
+    def call(self, x):
         
+        embedding = self.embed(x)
+        
+        ca1 = Dense(self.dim * 2)(embedding)
         
         
         x = tf.concat([latent, embedding],axis=1)
