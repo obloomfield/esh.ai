@@ -28,7 +28,7 @@ class Model(tf.keras.Model):
         # - and use tf.keras.layers.GRU or tf.keras.layers.LSTM for your RNN 
         self.embedding_layer = tf.keras.layers.Embedding(vocab_size, self.embedding_size)
         self.lstm = tf.keras.layers.LSTM(self.rnn_size, return_sequences=True, return_state=True)
-        self.dense1 = tf.keras.layers.Dense(self.rnn_size, activation="leakyrelu")
+        self.dense1 = tf.keras.layers.Dense(self.rnn_size, activation="leakyrelu ")
 
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
 
