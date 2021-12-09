@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from glu import FastGLU
+from code.purgatory.glu import FastGLU
 
 class CA(tf.keras.Model):
             
