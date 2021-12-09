@@ -102,7 +102,7 @@ def main():
     # load_weights(d,'weights/discriminator.pth')
     
     NUM_EPOCHS = 50
-    BATCH_SIZE = 30
+    BATCH_SIZE = 1
     RESOLUTION = 256
     ARTSY_INDEX = 0.9
 
