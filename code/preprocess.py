@@ -6,7 +6,9 @@ import numpy as np
 
 def get_data(): 
     images = glob.glob("ClothingAttributeDataset/images/*")
+    print(len(images))
     labels = glob.glob("ClothingAttributeDataset/labels/*")
+    print(len(labels))
     label_res = []
     image_res = []
     for i in range(len(images)):
@@ -33,5 +35,5 @@ def get_data():
     #returns image train and test split as well as the corresponding label train and test split
     #return image_train, image_test, label_train, label_test
     #(1500-356) train test split
-    print(len(label_res[1]))
+    print(label_res)
     return image_res[:1501], image_res[1501:], label_res[:1501], label_res[1501:]
