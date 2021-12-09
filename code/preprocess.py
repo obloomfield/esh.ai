@@ -36,4 +36,6 @@ def get_data():
     #return image_train, image_test, label_train, label_test
     #(1500-356) train test split
     print(len(label_res[1]))
+    image_res = tf.convert_to_tensor(image_res)
+    label_res = tf.convert_to_tensor(label_res)
     return image_res[:1501], image_res[1501:], label_res[:1501], label_res[1501:]
