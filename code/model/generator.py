@@ -11,7 +11,7 @@ class Generator(tf.keras.Model):
         # Hyperparameters
         
         self.depth = 64
-        self.dim = 64 # i think this just needs to be 1/4 the final dim and everything works out
+        self.dim = 32 # i think this just needs to be 1/4 the final dim and everything works out
         self.dropout_rate = 0.4
         
         self.embed_size = 64
@@ -52,8 +52,8 @@ class Generator(tf.keras.Model):
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
 
-        # Third stage: ouputs 256x256x1 image
-        self.G.add(Conv2DTranspose(1, 5, padding='same'))
+        # Third stage: ouputs 256x256x3 image
+        self.G.add(Conv2DTranspose(3, 5, padding='same'))
         self.G.add(Activation('tanh')) # maybe use softmax instead
         
 
