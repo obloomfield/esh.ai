@@ -5,7 +5,7 @@ from tensorflow.python.keras.losses import binary_crossentropy
 
 class Generator(tf.keras.Model):
             
-    def __init__(self, rnn_size,  **kwargs):
+    def __init__(self, input_size,  **kwargs):
         super().__init__(**kwargs)
         self.input_size = input_size
        
