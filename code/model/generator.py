@@ -32,7 +32,7 @@ class Generator(tf.keras.Model):
         self.G = Sequential()
 
         # First stage
-        self.G.add(Dense(self.dim*self.dim*self.depth, input_shape=(input_size,)))
+        self.G.add(Dense(self.dim*self.dim*self.depth))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
         self.G.add(Reshape((self.dim, self.dim, self.depth)))
