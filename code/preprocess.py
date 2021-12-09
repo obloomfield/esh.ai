@@ -14,7 +14,7 @@ def get_data():
         img = img.resize((256, 256))
         rgb_tensor = tf.keras.preprocessing.image.img_to_array(img)
         image_res.append(rgb_tensor)
-        temp = []
+        img_lab = []
         for label in labels:
             mat = scipy.io.loadmat(label)
             mat = mat["GT"]
@@ -27,8 +27,8 @@ def get_data():
             specific = mat[i][0]
             if not(np.isnan(specific)):
                 arr[int(specific) - 1] = 1
-            temp += arr
-        label_res.append(temp)
+            img_lab += arr
+        label_res.append(img_lab)
     
     #returns image train and test split as well as the corresponding label train and test split
     #return image_train, image_test, label_train, label_test
