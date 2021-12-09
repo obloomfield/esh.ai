@@ -87,6 +87,7 @@ def test( g, d, test_imgs, test_text):
         
         d_l = d.loss(fake_trick_score,all_real_score,rand_label_score)
         d_loss_acc += d_l
+    return g_loss_acc, d_loss_acc
     
 
 def main():
@@ -111,8 +112,8 @@ def main():
         train(g, d, img_train, lbl_train, BATCH_SIZE, RESOLUTION, ARTSY_INDEX)
     print('TRAINING COMPLETE')
     
-    acc_gen = test(g, d, img_test, lbl_test)
-    print(acc_gen)
+    gen_acc, disc_acc = test(g, d, img_test, lbl_test)
+    print(f'Gen: {gen_acc} | Disc: {disc_acc}')
     
     save_weights(g,'weights/generator.pth')
     save_weights(d,'weights/discriminator.pth')
