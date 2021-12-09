@@ -18,7 +18,7 @@ class Generator(tf.keras.Model):
         
         self.embed = Sequential()
         
-        self.embed.add(Embedding(self.embed_size))
+        self.embed.add(Embedding(49, self.embed_size))
         self.embed.add(Dense(self.embed_size))
         self.embed.add(LeakyReLU(alpha=0.03))
         
