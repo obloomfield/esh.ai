@@ -87,6 +87,9 @@ def train(model, train_inputs, train_labels):
     train_inputs = tf.reshape([train_inputs[:last_mult_window]], [-1, model.window_size]) # doesn't go past the last multiple of window size
     train_labels = tf.reshape([train_labels[:last_mult_window]], [-1, model.window_size])
 
+
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+    
     for i in range(0, len(train_labels), model.batch_size):
       cur_inputs = train_inputs[i:i + model.batch_size]
       cur_labels = train_labels[i:i + model.batch_size]
@@ -101,7 +104,7 @@ def train(model, train_inputs, train_labels):
         #   print("Accuracy on training set after {} training steps: {}".format(i, train_acc))
       
       gradients = tape.gradient(loss, model.trainable_variables)
-      model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+      optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     
     pass
 

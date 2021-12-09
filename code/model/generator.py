@@ -9,9 +9,10 @@ class Generator(tf.keras.Model):
     def __init__(self):
         super(Generator, self).__init__()
         # Hyperparameters
+        
         self.depth = 64
         self.dim = 64 # i think this just needs to be 1/4 the final dim and everything works out
-        self.dropout_rate
+        self.dropout_rate = 0.4
         
         self.embed_size = 64
         
@@ -27,7 +28,7 @@ class Generator(tf.keras.Model):
         self.G = Sequential()
 
         # First stage
-        self.G.add(Dense(self.dim*self.dim*self.depth))
+        self.G.add(Dense(self.dim*self.dim*self.depth, input_shape=(input_size,)))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
         self.G.add(Reshape((self.dim, self.dim, self.depth)))
@@ -35,20 +36,20 @@ class Generator(tf.keras.Model):
 
         # Second stage
         self.G.add(UpSampling2D(size=2))
-        self.G.add(Conv2DTranspose(self.depth // 2, 5, padding='SAME'))
+        self.G.add(Conv2DTranspose(self.depth // 2, 3, padding='SAME'))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
         self.G.add(UpSampling2D(size=2))
-        self.G.add(Conv2DTranspose(self.depth // 4, 5, padding='SAME'))
+        self.G.add(Conv2DTranspose(self.depth // 4, 3, padding='SAME'))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
         self.G.add(UpSampling2D(size=2))
-        self.G.add(Conv2DTranspose(self.depth // 8, 5, padding='SAME'))
+        self.G.add(Conv2DTranspose(self.depth // 8, 3, padding='SAME'))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
 
-        # Third stage: ouputs 264x264x1 image
-        self.G.add(Conv2DTranspose(1, 5, padding='same'))
+        # Third stage: ouputs 256x256x1 image
+        self.G.add(Conv2DTranspose(1, 3, padding='same'))
         self.G.add(Activation('tanh')) # maybe use softmax instead
         
 
@@ -57,8 +58,8 @@ class Generator(tf.keras.Model):
         
         
         x = tf.concat([latent, embedding],axis=1)
-        out = self.G(x)
+        out = self.G(latent)
         return out
     
     def loss(self, score):
-        return tf.keras.losses.BinaryCrossentropy(tf.ones_like(score), score)
+        return BinaryCrossentropy(tf.ones_like(score), score)
