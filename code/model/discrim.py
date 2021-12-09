@@ -28,13 +28,9 @@ class Discriminator(tf.keras.Model):
         self.D.add(Dropout(dropout))
         self.D.add(Conv2D(depth*4, 5, strides=2, padding='same', activation=LeakyReLU(alpha=0.2)))
         self.D.add(Dropout(dropout))
-        self.post_convolution.add(Conv2D(depth*8, 5, strides=1, padding='same', activation=LeakyReLU(alpha=0.2)))
-        self.post_convolution.add(Dropout(dropout))
+        self.D.add(Conv2D(depth*8, 5, strides=1, padding='same', activation=LeakyReLU(alpha=0.2)))
         
         self.post_convolution = Sequential()
-        
-        self.post_convolution.add(Conv2D(depth*8, 5, strides=1, padding='same', activation=LeakyReLU(alpha=0.2)))
-        self.post_convolution.add(Dropout(dropout))
         self.post_convolution.add(Flatten())
         self.post_convolution.add(Dense(1))
         self.post_convolution.add(Activation('sigmoid'))
