@@ -73,4 +73,5 @@ class Generator(tf.keras.Model):
         return out
     
     def loss(self, score):
-        return tf.keras.losses.BinaryCrossentropy(tf.ones_like(score), score)
+        l = tf.keras.losses.BinaryCrossentropy()
+        return l(tf.ones_like(score), score)
