@@ -37,9 +37,9 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
             fake_gen = g(cur_labels, z)
             
             score = d(fake_gen, cur_labels)
-            g_l = g.loss(score)
+            g_loss = g.loss(score)
             
-        gradients = tape.gradient(g_l, g.trainable_variables)
+        gradients = tape.gradient(g_loss, g.trainable_variables)
         optimizer.apply_gradients(zip(gradients, g.trainable_variables))
             
             
@@ -60,15 +60,12 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
             rand_label_score = d(cur_imgs, rand_labels)
             
             # loss based on all the scores
-            d_l = d.loss(fake_trick_score, all_real_score, rand_label_score)
+            d_loss = d.loss(fake_trick_score, all_real_score, rand_label_score)
             
-        gradients = tape.gradient(d_l, d.trainable_variables)
+        gradients = tape.gradient(d_loss, d.trainable_variables)
         optimizer.apply_gradients(zip(gradients, d.trainable_variables))
 
-        print("generator loss: ",  str(g_l))
-        print("discriminator loss: ", str(d_l)) 
-        print("iteration: ", str(i))
-        i += 1
+        print(f'Batch: {i} | Gen Loss: {g_loss} | Disc Loss: {d_loss}')
 
 def test( g, d, test_imgs, test_text):
     g_loss_acc = 0
