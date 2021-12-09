@@ -40,20 +40,20 @@ class Generator(tf.keras.Model):
 
         # Second stage
         self.G.add(UpSampling2D(size=2))
-        self.G.add(Conv2DTranspose(self.depth // 2, 3, padding='SAME'))
+        self.G.add(Conv2DTranspose(self.depth // 2, 5, padding='SAME'))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
         self.G.add(UpSampling2D(size=2))
-        self.G.add(Conv2DTranspose(self.depth // 4, 3, padding='SAME'))
+        self.G.add(Conv2DTranspose(self.depth // 4, 5, padding='SAME'))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
         self.G.add(UpSampling2D(size=2))
-        self.G.add(Conv2DTranspose(self.depth // 8, 3, padding='SAME'))
+        self.G.add(Conv2DTranspose(self.depth // 8, 5, padding='SAME'))
         self.G.add(BatchNormalization(momentum=0.99))
         self.G.add(Activation('relu'))
 
         # Third stage: ouputs 256x256x1 image
-        self.G.add(Conv2DTranspose(1, 3, padding='same'))
+        self.G.add(Conv2DTranspose(1, 5, padding='same'))
         self.G.add(Activation('tanh')) # maybe use softmax instead
         
 
