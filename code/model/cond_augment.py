@@ -1,6 +1,5 @@
 import numpy as np
 import tensorflow as tf
-from code.purgatory.glu import FastGLU
 
 class CA():
 

@@ -90,7 +90,9 @@ def test( g, d, test_imgs, test_text):
     
 
 def main():
-    imgs, labels = get_data()
+    print('STARTING PREPROCESSING')
+    img_train, img_test, lbl_train, lbl_test = get_data()
+    print('PREPROCESSING COMPLETE')
     
     g = Generator()
     d = Discriminator()
@@ -98,16 +100,18 @@ def main():
     # load_weights(g,'weights/generator.pth')
     # load_weights(d,'weights/discriminator.pth')
     
-    NUM_EPOCHS = 100
+    NUM_EPOCHS = 50
     BATCH_SIZE = 100
     RESOLUTION = 256
     ARTSY_INDEX = 0.9
 
+    print('TRAINING MODEL')
     for i in range(NUM_EPOCHS):
         print("epoch: ", i)
-        train(g,d,imgs,labels, BATCH_SIZE, RESOLUTION, ARTSY_INDEX)
+        train(g, d, img_train, lbl_train, BATCH_SIZE, RESOLUTION, ARTSY_INDEX)
+    print('TRAINING COMPLETE')
     
-    acc_gen = test(g,d,imgs,labels)
+    acc_gen = test(g, d, img_test, lbl_test)
     print(acc_gen)
     
     save_weights(g,'weights/generator.pth')
