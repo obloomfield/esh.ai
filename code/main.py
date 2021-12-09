@@ -27,7 +27,7 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
         cur_imgs = train_imgs[i:i + batch_sz]
         cur_labels = train_text[i:i + batch_sz]
         # finding random label from batch, using generic gan setup tutorial
-        rand_labels = train_text[np.random.randint(train_text.shape[0], size=(batch_sz)),:]
+        rand_labels = train_text[np.random.randint(len(train_text), size=(batch_sz)),:]
         z = tf.random.normal([batch_sz, res], stddev=(1.0*artsy_index))
         
         #GENERATOR GRADIENTS - 
