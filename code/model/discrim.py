@@ -42,6 +42,7 @@ class Discriminator(tf.keras.Model):
         
         x = tf.concat([x,embed],axis=1)
         out = self.post_convolution(x)
+        print(out)
         return out
     
     def score(self, score):
