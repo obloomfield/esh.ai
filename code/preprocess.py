@@ -29,5 +29,7 @@ def get_data():
                 arr[int(specific) - 1] = 1
             temp += arr
         label_res.append(temp)
-
-    return image_res, label_res
+    
+    #returns image train and test split as well as the corresponding label train and test split
+    #return image_train, image_test, label_train, label_test
+    return image_res[:1501], image_res[1501:], label_res[:1501], label_res[1501:]
