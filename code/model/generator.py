@@ -19,7 +19,10 @@ class Generator(tf.keras.Model):
         self.embed = Sequential()
         
         self.embed.add(Embedding(self.embed_size))
+        self.embed.add(Dense(self.embed_size))
         self.embed.add(LeakyReLU(alpha=0.03))
+        
+        # self.lstm = tf.keras.layers.LSTM(self.embed_size)
         
         # self.ca = Sequential()
         
@@ -54,16 +57,20 @@ class Generator(tf.keras.Model):
         self.G.add(Activation('tanh')) # maybe use softmax instead
         
 
-    def call(self, x):
+    def call(self, x, z):
         
         embedding = self.embed(x)
         
-        ca1 = Dense(self.dim * 2)(embedding)
+        # debug: removing cond_augment for now
+        # ca1 = Dense(self.dim * 2)(embedding)
+        # mu, logvar = cond_aug(self, ca1)
+        # z = tf.random.normal(self.depth*2, mean=mu, stdev=logvar)
+        # glu = glu(embedding)
         
+        x = tf.concat([embedding, z],axis=1)
         
-        x = tf.concat([latent, embedding],axis=1)
-        out = self.G(latent)
+        out = self.G(x) # runs the deconvolutions
         return out
     
     def loss(self, score):
-        return BinaryCrossentropy(tf.ones_like(score), score)
+        return tf.keras.losses.BinaryCrossentropy(tf.ones_like(score), score)

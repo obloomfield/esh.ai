@@ -28,25 +28,33 @@ class Discriminator(tf.keras.Model):
         self.D.add(Dropout(dropout))
         self.D.add(Conv2D(depth*4, 5, strides=2, padding='same', activation=LeakyReLU(alpha=0.2)))
         self.D.add(Dropout(dropout))
-        self.D.add(Conv2D(depth*8, 5, strides=1, padding='same', activation=LeakyReLU(alpha=0.2)))
-        self.D.add(Dropout(dropout))
-        self.D.add(Flatten())
-        self.D.add(Dense(1))
-        self.D.add(Activation('sigmoid'))
+        self.post_convolution.add(Conv2D(depth*8, 5, strides=1, padding='same', activation=LeakyReLU(alpha=0.2)))
+        self.post_convolution.add(Dropout(dropout))
+        
+        self.post_convolution = Sequential()
+        
+        self.post_convolution.add(Conv2D(depth*8, 5, strides=1, padding='same', activation=LeakyReLU(alpha=0.2)))
+        self.post_convolution.add(Dropout(dropout))
+        self.post_convolution.add(Flatten())
+        self.post_convolution.add(Dense(1))
+        self.post_convolution.add(Activation('sigmoid'))
 
         
-        
     @tf.function
-    def call(self, latent, embedding):
-        x = tf.concat([latent,embedding],axis=1)
-        out = self.D(x)
+    def call(self, image, labels):
+        embed = self.embed(labels)
+        x = self.D(image)
+        
+        x = tf.concat([x,embed],axis=1)
+        out = self.post_convolution(x)
         return out
     
     def score(self, score):
-        return BinaryCrossentropy(tf.ones_like(score), score)
+        return tf.keras.losses.BinaryCrossentropy(tf.ones_like(score), score)
 
-    def loss(self, pred, labels):
-        D_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(pred), logits=pred))
-        D_loss += tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(labels), logits=labels))
+    def loss(self, fake_trick_score, all_real_score, rand_label_score): # extension on loss from lab:
+        
+        D_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(all_real_score), logits=all_real_score))
+        D_loss += (1/2) * tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(fake_trick_score), logits=fake_trick_score))
+        D_loss += (1/2) * tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(rand_label_score), logits=rand_label_score))
         return D_loss
-    

@@ -15,7 +15,7 @@ def load_weights(model, pth):
     # load weights from path
     model.load_weights(pth)
 
-def train(g, d, train_imgs, train_text, batch_sz, res):
+def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
     """
     Runs through one epoch - all training examples.
 
@@ -28,12 +28,12 @@ def train(g, d, train_imgs, train_text, batch_sz, res):
         cur_labels = train_text[i:i + batch_sz]
         # finding random label from batch, using generic gan setup tutorial
         rand_labels = train_text[np.random.randint(train_text.shape[0], size=(model.batch_size)),:]
-
+        z = tf.random.normal([batch_sz, res], stddev=(1.0*artsy_index))
         
         #GENERATOR GRADIENTS - 
         with tf.GradientTape() as tape:
             #generator
-            z = tf.random.normal([batch_sz, res])
+
             fake_gen = g(cur_labels, z)
             
             score = d(fake_gen, cur_labels)
@@ -47,7 +47,7 @@ def train(g, d, train_imgs, train_text, batch_sz, res):
         with tf.GradientTape() as tape:
            
             # ~~ generator:
-            z = tf.random.normal([batch_sz, 256])
+            
             fake_gen = g(cur_labels, z)
             
             # ~~ discriminator on: 
@@ -65,7 +65,9 @@ def train(g, d, train_imgs, train_text, batch_sz, res):
         gradients = tape.gradient(d_l, d.trainable_variables)
         optimizer.apply_gradients(zip(gradients, d.trainable_variables))
 
-        print("generator loss: " + str(g_l) + ", discriminator loss: " + str(d_l) " on iteration: " + str(i))
+        print("generator loss: ",  str(g_l))
+        print("discriminator loss: ", str(d_l)) 
+        print("iteration: ", str(i))
         i += 1
 
 def test( g, d, test_imgs, test_text):
@@ -102,10 +104,11 @@ def main():
     NUM_EPOCHS = 100
     BATCH_SIZE = 100
     RESOLUTION = 256
+    ARTSY_INDEX = 0.9
 
     for i in range(NUM_EPOCHS):
         print("epoch: ", i)
-        train(g,d,imgs,labels, BATCH_SIZE, RESOLUTION)
+        train(g,d,imgs,labels, BATCH_SIZE, RESOLUTION, ARTSY_INDEX)
     
     acc_gen = test(g,d,imgs,labels)
     print(acc_gen)

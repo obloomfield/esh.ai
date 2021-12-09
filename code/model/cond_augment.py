@@ -15,8 +15,7 @@ class CA():
 
     def cond_aug(model, x):
         mu, logvar = model.encode(x)
-        z = model.reparametrize(mu, logvar)
-        return z, mu, logvar
+        return mu, logvar
     
     def glu(model, x):
         size = x.shape(1) / 2 
@@ -42,9 +41,3 @@ class CA():
         z = sigma * epsilon + mu
 
         return z
-    
-    @tf.function
-    def call(self, x):
-        mu, logvar = self.encode(x)
-        z = self.reparametrize(mu, logvar)
-        return z, mu, logvar
