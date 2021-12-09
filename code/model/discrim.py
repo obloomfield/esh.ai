@@ -13,7 +13,7 @@ class Discriminator(tf.keras.Model):
         
         self.embed = Sequential()
         
-        self.embed.add(Embedding(49, self.embed_size))
+        self.embed.add(Embedding(59, self.embed_size))
         self.embed.add(LeakyReLU(alpha=0.03))
         
         self.D = Sequential()
