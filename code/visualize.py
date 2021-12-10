@@ -78,19 +78,22 @@ def visualize(gen, disc, text, artsy_index):
     #disc_output = float
     z = tf.random.normal([1,256], stddev=(1.0*artsy_index))
     one_hot = text_converter(text)
+    one_hot = tf.convert_to_tensor(one_hot)
+    one_hot = tf.reshape(one_hot, (1, 59))
     img = gen(one_hot, z)
     img = np.asarray(img)
     img = np.squeeze(img, axis = 0)
+    #print(img.shape)
     img = tf.keras.preprocessing.image.array_to_img(img)
-    im = Image.open(img)
-    im.show()
+    #im = Image.open(img)
+    img.show()
 
 def load_weights(model, pth):
     # load weights from path
     model.load_weights(pth)
 
 def main():
-    input_text = ["red", "floral"]
+    input_text = ["purple", "shirt"]
     g = Generator()
     print('LOADING GENERATOR')
     load_weights(g, 'weights/generator.pth')
@@ -99,3 +102,6 @@ def main():
     load_weights(d, 'weights/discriminator.pth')
     print('GENERATING IMAGE')
     visualize(g, d, input_text, 1)
+
+if __name__ == "__main__":
+    main()
