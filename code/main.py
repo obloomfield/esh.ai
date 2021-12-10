@@ -34,7 +34,7 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
         rand_labels = train_text[np.random.randint(train_text.shape[0], size=(batch_sz)),:]
         z = tf.random.normal([batch_sz, res], stddev=(1.0*artsy_index))
         
-        with tf.GradientTape() as tape:
+        with tf.GradientTape(persistent=True) as tape:
             # generated images
             fake_gen = g(cur_labels, z)
             
