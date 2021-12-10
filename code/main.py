@@ -26,10 +26,9 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
         grad = tape.gradient(loss, model.trainable_variables)
         optimizer.apply_gradients(zip(grad, model.trainable_variables))
 
-    i = 0
-    for i in range(0, len(train_imgs), batch_sz):
-        cur_imgs = train_imgs[i:i + batch_sz]
-        cur_labels = train_text[i:i + batch_sz]
+    for i in range(batch_sz, len(train_imgs), batch_sz):
+        cur_imgs = train_imgs[i-batch_sz:i]
+        cur_labels = train_text[i-batch_sz:i]
         # finding random label from batch, using generic gan setup tutorial
         rand_labels = train_text[np.random.randint(train_text.shape[0], size=(batch_sz)),:]
         z = tf.random.normal([batch_sz, res], stddev=(1.0*artsy_index))
@@ -87,7 +86,7 @@ def main():
     # load_weights(d,'weights/discriminator.pth')
     
     NUM_EPOCHS = 50
-    BATCH_SIZE = 50
+    BATCH_SIZE = 500
     RESOLUTION = 256
     ARTSY_INDEX = 0.9
 
