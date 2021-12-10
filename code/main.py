@@ -96,8 +96,8 @@ def main():
         train(g, d, img_train, lbl_train, BATCH_SIZE, RESOLUTION, ARTSY_INDEX)
     print('TRAINING COMPLETE')
     
-    gen_acc, disc_acc = test(g, d, img_test, lbl_test)
-    print(f'Gen: {gen_acc} | Disc: {disc_acc}')
+    # gen_acc, disc_acc = test(g, d, img_test, lbl_test)
+    # print(f'Gen: {gen_acc} | Disc: {disc_acc}')
     
     save_weights(g,'weights/generator.pth')
     save_weights(d,'weights/discriminator.pth')
