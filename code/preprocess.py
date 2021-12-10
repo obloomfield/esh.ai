@@ -36,6 +36,6 @@ def get_data():
     #return image_train, image_test, label_train, label_test
     #(1500-356) train test split
     print(len(label_res[1]))
-    image_res = np.array(image_res)
+    image_res = np.array(image_res) / 255
     label_res = np.array(label_res)
     return image_res[:1501], image_res[1501:], label_res[:1501], label_res[1501:]

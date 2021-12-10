@@ -30,40 +30,23 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
         rand_labels = train_text[np.random.randint(train_text.shape[0], size=(batch_sz)),:]
         z = tf.random.normal([batch_sz, res], stddev=(1.0*artsy_index))
         
-        #GENERATOR GRADIENTS - 
         with tf.GradientTape() as tape:
-            #generator
+            # generated images
+            fake_gen = g(cur_labels, z)
+            
+            # pass real images with real text through discriminator
+            logits_real = d(cur_imgs, cur_labels)
+            # pass real images with random text through discriminator
+            logits_rand = d(cur_imgs, rand_labels)
+            # pass fake images with real text through discriminator
+            logits_fake = d(fake_gen, cur_labels)
 
-            fake_gen = g(cur_labels, z)
-            
-            score = d(fake_gen, cur_labels)
-            g_loss = g.loss(score)
-            
-        gradients = tape.gradient(g_loss, g.trainable_variables)
-        optimizer.apply_gradients(zip(gradients, g.trainable_variables))
-            
-            
-        #DISCRIMINATOR GRADIENTS - 
-        with tf.GradientTape() as tape:
-           
-            # ~~ generator:
-            
-            fake_gen = g(cur_labels, z)
-            
-            # ~~ discriminator on: 
-            
-            # fake trick : fake img, real labels
-            fake_trick_score = d(fake_gen, cur_labels) # (tries to see if generator flat-out tricks the discrim)
-            # all real : real img, real labels
-            all_real_score = d(cur_imgs, cur_labels) 
-            # rand label  : real img, randomly chosen labels
-            rand_label_score = d(cur_imgs, rand_labels)
-            
-            # loss based on all the scores
-            d_loss = d.loss(fake_trick_score, all_real_score, rand_label_score)
-            
-        gradients = tape.gradient(d_loss, d.trainable_variables)
-        optimizer.apply_gradients(zip(gradients, d.trainable_variables))
+            g_loss = g.loss(logits_fake)
+            d_loss = d.loss(logits_fake, logits_real, logits_rand)
+        g_grad = tape.gradient(g_loss, g.trainable_variables)
+        optimizer.apply_gradients(zip(g_grad, g.trainable_variables))
+        d_grad = tape.gradient(d_loss, d.trainable_variables)
+        optimizer.apply_gradients(zip(d_grad, d.trainable_variables))
 
         print(f'Batch: {i} | Gen Loss: {g_loss} | Disc Loss: {d_loss}')
 

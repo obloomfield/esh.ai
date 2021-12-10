@@ -54,7 +54,7 @@ class Generator(tf.keras.Model):
 
         # Third stage: ouputs 256x256x3 image
         self.G.add(Conv2DTranspose(3, 5, padding='same'))
-        self.G.add(Activation('tanh')) # maybe use softmax instead
+        self.G.add(Activation('sigmoid')) # maybe use softmax instead
         
 
     def call(self, x, z):
@@ -73,5 +73,4 @@ class Generator(tf.keras.Model):
         return out
     
     def loss(self, score):
-        l = tf.keras.losses.BinaryCrossentropy()
-        return l(tf.ones_like(score), score)
+        return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(score), logits=score))
