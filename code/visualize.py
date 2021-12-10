@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+from model.discrim import Discriminator
+from model.generator import Generator
 
 def text_converter(text):
     idx_map = {
@@ -82,3 +84,18 @@ def visualize(gen, disc, text, artsy_index):
     img = tf.keras.preprocessing.image.array_to_img(img)
     im = Image.open(img)
     im.show()
+
+def load_weights(model, pth):
+    # load weights from path
+    model.load_weights(pth)
+
+def main():
+    input_text = ["red", "floral"]
+    g = Generator()
+    print('LOADING GENERATOR')
+    load_weights(g, 'weights/generator.pth')
+    d = Discriminator()
+    print('LOADING DISCRIMINATOR')
+    load_weights(d, 'weights/discriminator.pth')
+    print('GENERATING IMAGE')
+    visualize(g, d, input_text, 1)
