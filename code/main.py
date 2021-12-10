@@ -22,6 +22,10 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
     """
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001, beta_1=0.5)
 
+    def optimize(tape: tf.GradientTape, model: tf.keras.Model, loss: tf.Tensor) -> None:
+        grad = tape.gradient(loss, model.trainable_variables)
+        optimizer.apply_gradients(zip(grad, model.trainable_variables))
+
     i = 0
     for i in range(0, len(train_imgs), batch_sz):
         cur_imgs = train_imgs[i:i + batch_sz]
@@ -43,10 +47,8 @@ def train(g, d, train_imgs, train_text, batch_sz, res, artsy_index):
 
             g_loss = g.loss(logits_fake)
             d_loss = d.loss(logits_fake, logits_real, logits_rand)
-        g_grad = tape.gradient(g_loss, g.trainable_variables)
-        optimizer.apply_gradients(zip(g_grad, g.trainable_variables))
-        d_grad = tape.gradient(d_loss, d.trainable_variables)
-        optimizer.apply_gradients(zip(d_grad, d.trainable_variables))
+        optimize(tape, g, g_loss)
+        optimize(tape, d, d_loss)
 
         print(f'Batch: {i} | Gen Loss: {g_loss} | Disc Loss: {d_loss}')
 
